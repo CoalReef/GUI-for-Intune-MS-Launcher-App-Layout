@@ -40,8 +40,36 @@ confirmAppLayoutButton.addEventListener("click", function() {
 
 // Function to open the window for entering apps for adding
 function openAppEntry() {
+    // Input window parent
+    const inputWindow = document.createElement("div");
+    inputWindow.id = "input-window-parent";
+
+    // Input box
     const inputBox = document.createElement("input");
     inputBox.type = "text";
     inputBox.id = "add-app-input";
-    pageContainer.append(inputBox);
+    inputWindow.append("inputBox");
+
+    // Close button
+    const closeButton = document.createElement("button");
+    closeButton.id = "close-input-page-button";
+    closeButton.textContent = "Close";
+    inputWindow.append(closeButton);
+
+    // Confirm Button
+    const confirmButton = document.createElement("button");
+    confirmButton.id = "confirm-input-button";
+    confirmButton.textContent = "Confirm";
+    inputWindow.append(confirmButton);
+    
+    // Append the input window to the page
+    pageContainer.append(inputWindow);
 }
+
+// Add the package to the grid when the button is clicked
+confirmButton.addEventListener("click", function() {
+    const givenPackageName = document.getElementById("add-app-input").textContent;
+    
+
+    pageContainer.append()
+})
