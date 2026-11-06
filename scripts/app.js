@@ -4,15 +4,16 @@ const confirmAppLayoutButton = document.getElementById('confirm-app-layout');
 const addAppButton = document.getElementsByClassName("add-app-button");
 const pageContainer = document.getElementById("page-container");
 
-// Create an event listner for each add button
-for (let i = 0; i < addAppButton.length; i++) {
-    addAppButton[i].addEventListener("click", function() {
-        openAppEntry();
-    })
-}
+document.addEventListener("click", function() {
+  const buttonId = event.target.id;
+
+  if (event.target.classList.contains('add-app-button')) {
+    openAppEntry(buttonId);
+  }
+});
 
 // Function that creates the JSON while the rest goes on
-confirmAppLayoutButton.addEventListener("click", function() {
+function createJson() {
 
   // Define the object
   const appLayout = {
@@ -27,10 +28,12 @@ confirmAppLayoutButton.addEventListener("click", function() {
   appLayout.managedProperty.push();
   
   console.log(appLayout);
-});
+};
 
 // Function to open the window for entering apps for adding
-function openAppEntry() {
+function openAppEntry(buttonNumber) {
+    console.log("Recieved: " + buttonNumber);
+
     // Input window parent
     const inputWindow = document.createElement("div");
     inputWindow.id = "input-window-parent";
@@ -55,4 +58,24 @@ function openAppEntry() {
     
     // Append the input window to the page
     pageContainer.append(inputWindow);
+
+    // close on close button click
+    closeButton.addEventListener("click", function() {
+      inputWindow.style.display = "none";
+    })
+
+    // On confirm, entered data will replace the button
+    confirmButton.addEventListener("click", function() {
+
+      // Store the entered package name
+      const givenPackage = inputBox.value;
+      
+      // Create the new element to replace the button with
+      const packageDisplayBox = document.createElement("div");
+      packageDisplayBox.textContent = givenPackage;
+
+      // Replace the add buttons position with the package name
+      console.log(document.getElementById(buttonNumber).textContent);
+      document.getElementById(buttonNumber).replaceWith(packageDisplayBox);
+    })
 }

@@ -1,7 +1,12 @@
-#grid-container {
+#app-grid-container {
     display: grid;
-    grid-template-columns: 5;
-    grid-template-rows: 5;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 1em;
+}
+
+.add-app-button {
+    padding: 2em;
 }
 
 
