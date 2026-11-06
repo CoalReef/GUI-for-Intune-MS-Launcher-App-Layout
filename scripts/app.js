@@ -77,5 +77,8 @@ function openAppEntry(buttonNumber) {
       // Replace the add buttons position with the package name
       console.log(document.getElementById(buttonNumber).textContent);
       document.getElementById(buttonNumber).replaceWith(packageDisplayBox);
+
+      // Close window when done
+      inputWindow.style.display = "none";
     })
 }

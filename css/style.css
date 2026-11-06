@@ -1,3 +1,67 @@
+/* 1. Use a more intuitive box-sizing model */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margins for common layout elements */
+*:not(dialog) {
+  margin: 0;
+}
+
+/* 3. Allow percentage-based heights and smooth transitions to auto-sizes */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords; /* Enables smooth height: auto transitions */
+  }
+}
+
+/* 4. Set core body defaults for better typography */
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 5. Improve media defaults and prevent responsive overflow */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 6. Inherit fonts for form controls so they don't use system defaults */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* 7. Prevent text-overflow and improve text wrapping layout */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+
+body {
+    background: rgb(64, 63, 63);
+}
+
+.add-app-button:hover {
+    cursor: pointer;
+    width: 105%;
+    height: 105%;
+    background: rgb(228, 228, 228);
+}
+
+.add-app-button {
+    border: none;
+    background: rgb(184, 182, 182);
+}
+
+
 #app-grid-container {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -16,4 +80,7 @@
     background: rgba(0, 0, 0, 0.514);
     padding-top: 50%;
     padding-left: 50%;
+    position: fixed;
+    top: 0;
+    left: 0;
 }
