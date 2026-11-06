@@ -55,57 +55,58 @@ const optionObject = {
 overallAppBundle.valueBundleArray.push(optionObject);
 }
 }
-console.log(JSON.stringify(overallAppBundle, null, 2)); // CHANGED: pretty-printed
+console.log(JSON.stringify(overallAppBundle, null, 2));
 };
 
 // Function to open the window for entering apps for adding
 function openAppEntry(buttonNumber) {
-console.log("Recieved: " + buttonNumber);
+  console.log("Recieved: " + buttonNumber);
 
-// Input window parent
-const inputWindow = document.createElement("div");
-inputWindow.id = "input-window-parent";
+  // Input window parent
+  const inputWindow = document.createElement("div");
+  inputWindow.id = "input-window-parent";
 
-// Input box
-const inputBox = document.createElement("input");
-inputBox.type = "text";
-inputBox.id = "add-app-input";
-inputWindow.append(inputBox);
+  // Input box
+  const inputBox = document.createElement("input");
+  inputBox.type = "text";
+  inputBox.id = "add-app-input";
+  inputWindow.append(inputBox);
 
-// Close button
-const closeButton = document.createElement("button");
-closeButton.id = "close-input-page-button";
-closeButton.textContent = "Close";
-inputWindow.append(closeButton);
+  // Close button
+  const closeButton = document.createElement("button");
+  closeButton.id = "close-input-page-button";
+  closeButton.textContent = "Close";
+  inputWindow.append(closeButton);
 
-// Confirm Button
-const confirmButton = document.createElement("button");
-confirmButton.id = "confirm-input-button";
-confirmButton.textContent = "Confirm";
-inputWindow.append(confirmButton);
-// Append the input window to the page
-pageContainer.append(inputWindow);
+  // Confirm Button
+  const confirmButton = document.createElement("button");
+  confirmButton.id = "confirm-input-button";
+  confirmButton.textContent = "Confirm";
+  inputWindow.append(confirmButton);
+  
+  // Append the input window to the page
+  pageContainer.append(inputWindow);
 
-// close on close button click
-closeButton.addEventListener("click", function() {
-inputWindow.style.display = "none";
-})
+  // close on close button click
+  closeButton.addEventListener("click", function() {
+    inputWindow.style.display = "none";
+  })
 
-// On confirm, entered data will replace the button
-confirmButton.addEventListener("click", function() {
+  // On confirm, entered data will replace the button
+  confirmButton.addEventListener("click", function() {
 
-// Store the entered package name
-const givenPackage = inputBox.value;
-// Create the new element to replace the button with
-const packageDisplayBox = document.createElement("div");
-packageDisplayBox.textContent = givenPackage;
-packageDisplayBox.id = buttonNumber; // CHANGED: keep the grid position on the new element
+  // Store the entered package name
+  const givenPackage = inputBox.value;
 
-// Replace the add buttons position with the package name
-console.log(document.getElementById(buttonNumber).textContent);
-document.getElementById(buttonNumber).replaceWith(packageDisplayBox);
+  // Create the new element to replace the button with
+  const packageDisplayBox = document.createElement("div");
+  packageDisplayBox.textContent = givenPackage;
+  packageDisplayBox.id = buttonNumber;
 
-// Close window when done
-inputWindow.style.display = "none";
+  // Replace the add buttons position with the package name
+  document.getElementById(buttonNumber).replaceWith(packageDisplayBox);
+
+  // Close window when done
+  inputWindow.style.display = "none";
 })
 }
