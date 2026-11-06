@@ -1,6 +1,5 @@
 const gridContainer = document.getElementById('app-grid-container');
 const packageEntryBox = document.getElementById('package-entry-box');
-const packageEntryConfirmButton = document.getElementById('confirm-package-entry');
 const confirmAppLayoutButton = document.getElementById('confirm-app-layout');
 const addAppButton = document.getElementsByClassName("add-app-button");
 const pageContainer = document.getElementById("page-container");
@@ -12,17 +11,9 @@ for (let i = 0; i < addAppButton.length; i++) {
     })
 }
 
-// Function to create a grid item
-packageEntryConfirmButton.addEventListener("click", function() {
-  const givenPackage = packageEntryBox.value;
-  let newGridItem = document.createElement('div');
-  newGridItem.textContent = givenPackage;
-
-  gridContainer.append(newGridItem);
-});
-
 // Function that creates the JSON while the rest goes on
 confirmAppLayoutButton.addEventListener("click", function() {
+
   // Define the object
   const appLayout = {
     managedProperty: [],
@@ -48,7 +39,7 @@ function openAppEntry() {
     const inputBox = document.createElement("input");
     inputBox.type = "text";
     inputBox.id = "add-app-input";
-    inputWindow.append("inputBox");
+    inputWindow.append(inputBox);
 
     // Close button
     const closeButton = document.createElement("button");
@@ -65,11 +56,3 @@ function openAppEntry() {
     // Append the input window to the page
     pageContainer.append(inputWindow);
 }
-
-// Add the package to the grid when the button is clicked
-confirmButton.addEventListener("click", function() {
-    const givenPackageName = document.getElementById("add-app-input").textContent;
-    
-
-    pageContainer.append()
-})
