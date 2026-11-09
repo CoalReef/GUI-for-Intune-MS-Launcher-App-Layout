@@ -1,4 +1,6 @@
-/* ---------- Reset (unchanged) ---------- */
+/* ==========================================================
+   Reset
+   ========================================================== */
 *, *::before, *::after { box-sizing: border-box; }
 *:not(dialog) { margin: 0; }
 
@@ -18,7 +20,9 @@ p, h1, h2, h3, h4, h5, h6 { overflow-wrap: break-word; }
 p { text-wrap: pretty; }
 h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
 
-/* ---------- Theme ---------- */
+/* ==========================================================
+   Theme
+   ========================================================== */
 :root {
   --bg: #1e1f22;
   --surface: #2b2d31;
@@ -27,36 +31,62 @@ h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
   --text: #f2f3f5;
   --accent: #5b8def;
   --radius: 0.75rem;
+
+  /* Fixed tile size. Nothing inside a tile can change it.
+     Shrinks only when the browser window is narrow (never because of text). */
+  --tile-size: min(4.25rem, calc((100vw - 7rem) / 5));
+  --gap: 0.75rem;
 }
 
 body {
   background: var(--bg);
   color: var(--text);
-  padding: 2rem;
+  padding: 2rem 1rem;
 }
 
-/* ---------- App grid ---------- */
+/* ==========================================================
+   App grid: explicit, fixed-size rows and columns
+   ========================================================== */
 #app-grid-container {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 1rem;
-  width: min(100%, 40rem);
+  grid-template-columns: repeat(5, var(--tile-size));
+  grid-template-rows: repeat(6, var(--tile-size));
+  grid-auto-rows: var(--tile-size);     /* any extra rows are the same fixed size */
+  gap: var(--gap);
+  width: fit-content;
   margin-inline: auto;
   padding: 1rem;
   background: var(--surface);
   border-radius: var(--radius);
 }
 
-/* Empty slot (the "+" button) */
+/* ----------------------------------------------------------
+   Every slot is a .add-app-button (the empty "+" and a slot
+   showing a package name). The tile is exactly the size of
+   its grid cell and clips whatever doesn't fit.
+   ---------------------------------------------------------- */
 .add-app-button {
   display: grid;
-  place-items: center;
-  aspect-ratio: 1;              /* replaces the padding: 50% hack */
+  place-items: safe center;         /* long text clips at the bottom, not the top */
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 0.3rem;
+  overflow: hidden;                 /* clip, don't grow */
+  contain: size;                    /* content can't influence the tile's size at all */
+
   border: 2px dashed var(--tile-hover);
   border-radius: var(--radius);
   background: transparent;
   color: var(--text);
-  font-size: 2rem;
+
+  font-size: 0.65rem;
+  line-height: 1.2;
+  text-align: center;
+  overflow-wrap: anywhere;          /* long package names break instead of overflowing */
+  hyphens: none;
+
   cursor: pointer;
   transition: transform 0.15s, background 0.15s, border-color 0.15s;
 }
@@ -65,28 +95,31 @@ body {
 .add-app-button:focus-visible {
   background: var(--tile);
   border-color: var(--accent);
-  transform: scale(1.05);       /* doesn't shift the layout like width/height did */
+  transform: scale(1.05);           /* doesn't shift the layout */
 }
 
-/* Filled slot (the div the JS swaps in) */
-#app-grid-container > :not(.add-app-button) {
-  display: grid;
-  place-items: center;
-  aspect-ratio: 1;
-  padding: 0.25rem;
+.add-app-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Optional: only applies if you add class "filled" to a slot in your JS */
+.add-app-button.filled {
+  border-style: solid;
+  border-color: transparent;
   background: var(--tile);
-  border-radius: var(--radius);
-  font-size: 0.65rem;
-  text-align: center;
-  overflow-wrap: anywhere;      /* long package names wrap instead of overflowing */
 }
 
-/* ---------- Entry window ---------- */
+/* ==========================================================
+   Entry window
+   ========================================================== */
 #input-window-parent {
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);   /* centers on its midpoint */
+  transform: translate(-50%, -50%);
+  z-index: 10;
+
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
@@ -94,16 +127,18 @@ body {
   padding: 1.5rem;
   background: var(--surface);
   border-radius: var(--radius);
-  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.6);  /* dimmed backdrop, no extra element */
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.6);   /* dimmed backdrop */
 }
 
 #add-app-input {
   flex: 1 1 100%;
+  min-width: 0;
   padding: 0.6rem 0.8rem;
   border: 1px solid var(--tile-hover);
   border-radius: 0.5rem;
   background: var(--bg);
   color: var(--text);
+  text-overflow: ellipsis;
 }
 
 #add-app-input:focus {
@@ -111,7 +146,9 @@ body {
   outline-offset: 1px;
 }
 
-/* ---------- Buttons ---------- */
+/* ==========================================================
+   Buttons
+   ========================================================== */
 #close-input-page-button,
 #confirm-input-button,
 #confirm-app-layout {
@@ -125,8 +162,104 @@ body {
 
 #close-input-page-button { flex: 1; background: var(--tile); }
 #confirm-input-button    { flex: 1; background: var(--accent); }
-#confirm-app-layout      { background: var(--accent); display: block; margin: 1rem auto 0; }
+#confirm-app-layout      { display: block; margin: 1rem auto 0; background: var(--accent); }
 
 #close-input-page-button:hover,
 #confirm-input-button:hover,
 #confirm-app-layout:hover { filter: brightness(1.15); }
+
+/* ==========================================================
+   JSON output
+   ========================================================== */
+#json-output-container {
+  /* same width as the grid above: 5 tiles + 4 gaps + the grid's side padding */
+  width: calc(5 * var(--tile-size) + 4 * var(--gap) + 2rem);
+  margin: 1rem auto 0;
+}
+
+#json-output {
+  display: block;                   /* <output> is inline by default */
+  width: 100%;
+  max-height: 18rem;                /* long JSON scrolls instead of stretching the page */
+  padding: 1rem;
+  overflow: auto;
+  background: var(--surface);
+  border-radius: var(--radius);
+  color: rgba(242, 243, 245, 0.8);
+
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  white-space: pre-wrap;            /* keeps indentation from JSON.stringify(x, null, 2) */
+  overflow-wrap: anywhere;          /* long package names never force sideways scrolling */
+  tab-size: 2;
+  scrollbar-color: var(--tile-hover) transparent;
+}
+
+/* Placeholder text while nothing has been generated yet */
+#json-output:empty::before {
+  content: "Your JSON will appear here.";
+  color: rgba(242, 243, 245, 0.4);
+  font-family: var(--font, system-ui, sans-serif);
+}
+/* ==========================================================
+   JSON output
+   ========================================================== */
+#json-output-container {
+  /* same width as the grid above: 5 tiles + 4 gaps + the grid's side padding */
+  width: calc(5 * var(--tile-size) + 4 * var(--gap) + 2rem);
+  margin: 1rem auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#json-output {
+  display: block;                   /* <output> is inline by default */
+  width: 100%;
+  max-height: 18rem;                /* long JSON scrolls instead of stretching the page */
+  padding: 1rem;
+  overflow: auto;
+  background: var(--surface);
+  border-radius: var(--radius);
+  color: rgba(242, 243, 245, 0.8);
+
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  white-space: pre-wrap;            /* keeps indentation from JSON.stringify(x, null, 2) */
+  overflow-wrap: anywhere;          /* long package names never force sideways scrolling */
+  tab-size: 2;
+  scrollbar-color: var(--tile-hover) transparent;
+}
+
+/* Placeholder text while nothing has been generated yet */
+#json-output:empty::before {
+  content: "Your JSON will appear here.";
+  color: rgba(242, 243, 245, 0.4);
+  font-family: var(--font, system-ui, sans-serif);
+}
+
+/* Copy JSON Button */
+#copy-json-button {
+  align-self: flex-end;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.75rem;
+  border: 1px solid var(--tile-hover);
+  border-radius: 0.5rem;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, filter 0.15s;
+}
+
+#copy-json-button:hover {
+  background: var(--tile);
+  border-color: var(--accent);
+  filter: brightness(1.15);
+}
+
+#copy-json-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
